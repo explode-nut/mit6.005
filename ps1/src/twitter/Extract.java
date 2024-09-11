@@ -5,6 +5,8 @@ package twitter;
 
 import java.util.List;
 import java.util.Set;
+import java.time.Duration;
+import java.time.Instant;
 
 /**
  * Extract consists of methods that extract information from a list of tweets.
@@ -24,7 +26,17 @@ public class Extract {
      *         every tweet in the list.
      */
     public static Timespan getTimespan(List<Tweet> tweets) {
-        throw new RuntimeException("not implemented");
+        Instant min = tweets.get(0).getTimestamp();
+        Instant max = tweets.get(0).getTimestamp();
+        for (Tweet i : tweets) {
+            long currentTimeStamp = Math.abs(Duration.between(i.getTimestamp(), Instant.EPOCH).getSeconds());
+            long minTimeStamp = Math.abs(Duration.between(min, Instant.EPOCH).getSeconds());
+            long maxTimeStamp = Math.abs(Duration.between(max, Instant.EPOCH).getSeconds());
+           
+            min = currentTimeStamp < minTimeStamp ? i.getTimestamp() : min;
+            max = currentTimeStamp > maxTimeStamp ? i.getTimestamp() : max;
+        }
+        return new Timespan(min, max);
     }
 
     /**

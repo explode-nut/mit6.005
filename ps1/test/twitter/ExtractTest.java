@@ -39,6 +39,24 @@ public class ExtractTest {
     }
     
     @Test
+    public void testGetTimespanMoreTweets() {
+        Tweet tweet3 = new Tweet(1, "alyssa", "is it reasonable to talk about rivest so much?", Instant.parse("2024-02-20T11:00:00Z"));
+        Tweet tweet4 = new Tweet(1, "alyssa", "is it reasonable to talk about rivest so much?", Instant.parse("2016-02-11T10:00:00Z"));
+        Timespan timespan = Extract.getTimespan(Arrays.asList(tweet1, tweet2, tweet3, tweet4));
+        
+        assertEquals("expected start", Instant.parse("2016-02-11T10:00:00Z"), timespan.getStart());
+        assertEquals("expected end", Instant.parse("2024-02-20T11:00:00Z"), timespan.getEnd());
+    }
+    
+    @Test
+    public void testGetTimespanTwoEqualTweets() {
+        Timespan timespan = Extract.getTimespan(Arrays.asList(tweet1, tweet1));
+        
+        assertEquals("expected start", d1, timespan.getStart());
+        assertEquals("expected end", d1, timespan.getEnd());
+    }
+    
+    @Test
     public void testGetMentionedUsersNoMention() {
         Set<String> mentionedUsers = Extract.getMentionedUsers(Arrays.asList(tweet1));
         
