@@ -3,9 +3,8 @@
  */
 package twitter;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * SocialNetwork provides methods that operate on a social network.
@@ -41,7 +40,27 @@ public class SocialNetwork {
      *         either authors or @-mentions in the list of tweets.
      */
     public static Map<String, Set<String>> guessFollowsGraph(List<Tweet> tweets) {
-        throw new RuntimeException("not implemented");
+        if (tweets == null || tweets.isEmpty()) {
+            return Collections.emptyMap();
+        }
+
+        Map<String, Set<String>> result = new HashMap<>();
+        for (Tweet tweet : tweets) {
+            Set<String> users = Extract.getMentionedUsers(Collections.singletonList(tweet));
+            Set<String> resultSet = users.stream()
+                    .filter(user -> !tweet.getAuthor().equals(user)) // filter是筛选出符合条件的元素
+                    .map(String::toLowerCase)
+                    .collect(Collectors.toSet());
+            resultSet.remove("null");
+            if (result.containsKey(tweet.getAuthor())) {
+                result.get(tweet.getAuthor()).addAll(resultSet);
+            } else {
+                result.put(tweet.getAuthor(), resultSet);
+            }
+
+        }
+
+        return result;
     }
 
     /**
@@ -54,7 +73,65 @@ public class SocialNetwork {
      *         descending order of follower count.
      */
     public static List<String> influencers(Map<String, Set<String>> followsGraph) {
-        throw new RuntimeException("not implemented");
+        if (followsGraph == null || followsGraph.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        List<String> result = new ArrayList<>();
+        Map<String, Integer> followersMap = new HashMap<>();
+        List<Node> tmp = new ArrayList<>();
+        followsGraph.forEach((k, v) -> {
+            v.forEach((i) -> {
+                if (followersMap.containsKey(i)) {
+                    followersMap.put(i, followersMap.get(i) + 1);
+                } else {
+                    followersMap.put(i, 1);
+                }
+            });
+        });
+        if (followersMap.size() != followsGraph.size()) {
+            followsGraph.forEach((k, v) -> {
+                if (!followersMap.containsKey(k)) {
+                    followersMap.put(k, 0);
+                }
+            });
+        }
+        followersMap.forEach((k, v) -> {
+            tmp.add(new Node(k, v));
+        });
+        tmp.sort(new NodeComparator());
+        for (Node node : tmp) {
+            result.add(node.getName());
+        }
+
+        return result;
     }
 
+    private static class NodeComparator implements Comparator<Node> {
+        @Override
+        public int compare(Node o1, Node o2) {
+            if (o1.getFollowers() == o2.getFollowers()) {
+                return o1.getName().charAt(0) - o2.getName().charAt(0);
+            }
+            return o2.getFollowers() - o1.getFollowers();
+        }
+    }
+
+    private static class Node {
+        private final String name;
+        private final int followers;
+
+        public Node(String name, int followers) {
+            this.name = name;
+            this.followers = followers;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public int getFollowers() {
+            return followers;
+        }
+    }
 }
