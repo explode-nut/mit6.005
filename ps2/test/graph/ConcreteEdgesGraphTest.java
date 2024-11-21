@@ -32,7 +32,27 @@ public class ConcreteEdgesGraphTest extends GraphInstanceTest {
     //   TODO
     
     // TODO tests for ConcreteEdgesGraph.toString()
-    
+    @Test
+    public void testToString() {
+        Graph<String> graph = emptyInstance();
+        graph.add("a");
+        graph.add("b");
+        graph.add("c");
+        graph.add("d");
+        graph.add("e");
+        graph.add("f");
+        graph.remove("c");
+        graph.set("a", "b", 2);
+        graph.set("a", "d", 1);
+        graph.set("d", "e", 3);
+        graph.set("e", "f", 4);
+        graph.set("b", "f", 7);
+        graph.set("b", "e", 5);
+        graph.set("a", "d", 0);
+        graph.set("b", "e", 4);
+        graph.remove("e");
+        System.out.println(graph);
+    }
     /*
      * Testing Edge...
      */
@@ -40,6 +60,12 @@ public class ConcreteEdgesGraphTest extends GraphInstanceTest {
     // Testing strategy for Edge
     //   TODO
     
-    // TODO tests for operations of Edge
-    
+    // tests for operations of Edge
+    @Test
+    public void testInstance() {
+        super.testSimpleAddAndRemoveVertexAndEdge();
+        super.removeNoneExistVertexAndEdge();
+        super.testAddExistsVertex();
+        super.testAddExistsEdge();
+    }
 }

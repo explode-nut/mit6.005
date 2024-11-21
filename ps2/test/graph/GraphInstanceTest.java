@@ -6,6 +6,8 @@ package graph;
 import static org.junit.Assert.*;
 
 import java.util.Collections;
+import java.util.Map;
+import java.util.Set;
 
 import org.junit.Test;
 
@@ -86,5 +88,41 @@ public abstract class GraphInstanceTest {
         int a = g.set("a", "d", 34);
         assertEquals("expected 0 because there was no such edge but got " + a, 0, a);
 
+    }
+
+    @Test
+    public void testAddExistsVertex() {
+        Graph<String> graph = emptyInstance();
+        graph.add("a");
+        graph.add("b");
+        graph.add("c");
+        graph.add("d");
+        graph.add("e");
+        graph.add("f");
+        graph.add("a");
+        Set<String> vertices = graph.vertices();
+        assertEquals("expected 6 but got " + vertices.size(), 6, vertices.size());
+    }
+
+    @Test
+    public void testAddExistsEdge() {
+        Graph<String> graph = emptyInstance();
+        graph.add("a");
+        graph.add("b");
+        graph.add("c");
+        graph.add("d");
+        graph.add("e");
+        graph.add("f");
+        graph.set("a", "b", 2);
+        graph.set("a", "d", 1);
+        graph.set("d", "e", 3);
+        graph.set("e", "f", 4);
+        graph.set("b", "f", 7);
+        graph.set("b", "e", 5);
+        graph.set("a", "d", 9);
+        graph.set("e", "f", 4);
+        Map<String, Integer> map = graph.sources("d");
+        Integer i = map.get("a");
+        assertEquals("expected 9 but got " + map.get("a"), 9, map.get("a").intValue());
     }
 }

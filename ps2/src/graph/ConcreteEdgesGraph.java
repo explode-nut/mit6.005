@@ -3,11 +3,7 @@
  */
 package graph;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * An implementation of Graph.
@@ -26,36 +22,116 @@ public class ConcreteEdgesGraph implements Graph<String> {
     // Safety from rep exposure:
     //   TODO
     
-    // TODO constructor
-    
+    // constructor
+    public ConcreteEdgesGraph() {}
+
     // TODO checkRep
     
     @Override public boolean add(String vertex) {
-        throw new RuntimeException("not implemented");
+        return vertices.add(vertex);
     }
     
     @Override public int set(String source, String target, int weight) {
-        throw new RuntimeException("not implemented");
+        if (!(vertices.contains(source) && vertices.contains(target))) {
+            return 0;
+        }
+        Edge edge = new Edge(source, target, weight);
+        if (weight == 0) {
+            edges.remove(edge);
+            return 1;
+        }
+
+        if (edges.contains(edge)) {
+            int i = 0;
+            for (Edge e : edges) {
+                if (e.equals(edge)) {
+                    break;
+                }
+                i++;
+            }
+
+            if (edges.get(i).getWeight() == weight) {
+                return 0;
+            } else {
+                edges.set(i, edge);
+                return 1;
+            }
+        }
+        edges.add(edge);
+        return 1;
     }
     
     @Override public boolean remove(String vertex) {
-        throw new RuntimeException("not implemented");
+        if (!vertices.contains(vertex)) {
+            return false;
+        }
+        vertices.remove(vertex);
+        edges.removeIf(e -> e.containsVertex(vertex));
+        return true;
     }
     
     @Override public Set<String> vertices() {
-        throw new RuntimeException("not implemented");
+        return Collections.unmodifiableSet(vertices);
     }
     
     @Override public Map<String, Integer> sources(String target) {
-        throw new RuntimeException("not implemented");
+        Map<String, Integer> map = new HashMap<>();
+        for (Edge e : edges) {
+            if (e.containsSource(target)) {
+                map.put(e.getSource(), e.getWeight());
+            }
+        }
+        return map;
     }
     
     @Override public Map<String, Integer> targets(String source) {
-        throw new RuntimeException("not implemented");
+        Map<String, Integer> map = new HashMap<>();
+        for (Edge e : edges) {
+            if (e.containsTarget(source)) {
+                map.put(e.getTarget(), e.getWeight());
+            }
+        }
+        return map;
     }
-    
-    // TODO toString()
-    
+
+    @Override
+    public int hashCode() {
+        return vertices.hashCode() + edges.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || this.getClass() != obj.getClass()) {
+            return false;
+        }
+        ConcreteEdgesGraph that = (ConcreteEdgesGraph) obj;
+        return this.vertices.hashCode() == that.vertices.hashCode()
+                && this.edges.hashCode() == that.edges.hashCode()
+                && this.vertices.size() == that.vertices.size()
+                && this.edges.size() == that.edges.size();
+    }
+
+    // toString()
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        String a = "There are " + this.vertices.size() + " vertex in this graph.Here are them:\n";
+        sb.append(a);
+        for (String v : vertices) {
+            sb.append(v);
+            sb.append(" ");
+        }
+        sb.append("\n");
+        String b = "There are " + this.edges.size() + " edge in this graph.Here are them:\n";
+        sb.append(b);
+        for (Edge e : edges) {
+            sb.append(e.toString());
+        }
+        return sb.toString();
+    }
 }
 
 /**
@@ -67,8 +143,10 @@ public class ConcreteEdgesGraph implements Graph<String> {
  * up to you.
  */
 class Edge {
-    
-    // TODO fields
+    // fields
+    private final String source;
+    private final String target;
+    private final int weight;
     
     // Abstraction function:
     //   TODO
@@ -77,12 +155,60 @@ class Edge {
     // Safety from rep exposure:
     //   TODO
     
-    // TODO constructor
+    // constructor
+    public Edge(String source, String target, int weight) {
+        this.source = source;
+        this.target = target;
+        this.weight = weight;
+    }
+
+    @Override
+    public int hashCode() {
+        return source.hashCode() + target.hashCode() + weight;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || this.getClass() != obj.getClass()) {
+            return false;
+        }
+        Edge that = (Edge) obj;
+        return  this.source.equals(that.source)
+                && this.target.equals(that.target);
+    }
+// TODO checkRep
     
-    // TODO checkRep
-    
-    // TODO methods
-    
-    // TODO toString()
-    
+    // methods
+    public boolean containsVertex(String vertex) {
+        return vertex.equals(this.source) || vertex.equals(this.target);
+    }
+
+    public boolean containsSource(String target) {
+        return target.equals(this.target);
+    }
+
+    public boolean containsTarget(String source) {
+        return source.equals(this.source);
+    }
+
+    public String getSource() {
+        return source;
+    }
+
+    public String getTarget() {
+        return target;
+    }
+
+    public int getWeight() {
+        return weight;
+    }
+
+    // toString()
+    @Override
+    public String toString() {
+        return source + "->" + target + " " + weight + "\n";
+    }
 }
