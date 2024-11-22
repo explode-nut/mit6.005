@@ -125,4 +125,21 @@ public abstract class GraphInstanceTest {
         Integer i = map.get("a");
         assertEquals("expected 9 but got " + map.get("a"), 9, map.get("a").intValue());
     }
+
+    @Test
+    public void testSetReturn() {
+        Graph<String> graph = emptyInstance();
+        graph.add("a");
+        graph.add("b");
+        graph.add("c");
+        graph.add("d");
+        graph.add("e");
+        graph.add("f");
+        int set1 = graph.set("a", "b", 2);
+        assertEquals("expected 0 but got " + set1, 0, set1);
+        int set2 = graph.set("a", "b", 7);
+        assertEquals("expected 2 but got " + set2, 2, set2);
+        int set3 = graph.set("a", "b", 0);
+        assertEquals("expected 7 but got " + set3, 7, set3);
+    }
 }

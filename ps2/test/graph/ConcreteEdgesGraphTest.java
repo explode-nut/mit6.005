@@ -67,5 +67,6 @@ public class ConcreteEdgesGraphTest extends GraphInstanceTest {
         super.removeNoneExistVertexAndEdge();
         super.testAddExistsVertex();
         super.testAddExistsEdge();
+        super.testSetReturn();
     }
 }

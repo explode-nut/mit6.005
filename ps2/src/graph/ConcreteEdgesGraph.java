@@ -37,8 +37,10 @@ public class ConcreteEdgesGraph implements Graph<String> {
         }
         Edge edge = new Edge(source, target, weight);
         if (weight == 0) {
+            int i = edges.indexOf(edge);
+            int result = edges.get(i).getWeight();
             edges.remove(edge);
-            return 1;
+            return result;
         }
 
         if (edges.contains(edge)) {
@@ -49,16 +51,16 @@ public class ConcreteEdgesGraph implements Graph<String> {
                 }
                 i++;
             }
-
             if (edges.get(i).getWeight() == weight) {
-                return 0;
+                return weight;
             } else {
+                int result = edges.get(i).getWeight();
                 edges.set(i, edge);
-                return 1;
+                return result;
             }
         }
         edges.add(edge);
-        return 1;
+        return 0;
     }
     
     @Override public boolean remove(String vertex) {
@@ -209,6 +211,6 @@ class Edge {
     // toString()
     @Override
     public String toString() {
-        return source + "->" + target + " " + weight + "\n";
+        return source + "->" + target + " weight:" + weight + "\n";
     }
 }
