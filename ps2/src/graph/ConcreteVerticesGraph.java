@@ -10,9 +10,9 @@ import java.util.*;
  * 
  * <p>PS2 instructions: you MUST use the provided rep.
  */
-public class ConcreteVerticesGraph implements Graph<String> {
+public class ConcreteVerticesGraph<L> implements Graph<L> {
     
-    private final List<Vertex> vertices = new ArrayList<>();
+    private final List<Vertex<L>> vertices = new ArrayList<>();
     
     // Abstraction function:
     //   TODO
@@ -26,21 +26,21 @@ public class ConcreteVerticesGraph implements Graph<String> {
 
     // TODO checkRep
 
-    @Override public boolean add(String vertex) {
-        for (Vertex v : vertices) {
+    @Override public boolean add(L vertex) {
+        for (Vertex<L> v : vertices) {
             if (vertex.equals(v.getContent())) {
                 return false;
             }
         }
-        return vertices.add(new Vertex(vertex));
+        return vertices.add(new Vertex<>(vertex));
     }
     
-    @Override public int set(String source, String target, int weight) {
+    @Override public int set(L source, L target, int weight) {
         boolean first = false;
         boolean second = false;
         int i = 0;
         int p = -1;
-        for (Vertex v : vertices) {
+        for (Vertex<L> v : vertices) {
             if (source.equals(v.getContent())) {
                 first = true;
                 p = i;
@@ -55,7 +55,7 @@ public class ConcreteVerticesGraph implements Graph<String> {
         }
 
         if (first && second) {
-            for (Vertex v : vertices) {
+            for (Vertex<L> v : vertices) {
                 if (p == 0) {
                     return v.setEdge(target, weight);
                 }
@@ -65,12 +65,12 @@ public class ConcreteVerticesGraph implements Graph<String> {
         return 0;
     }
     
-    @Override public boolean remove(String vertex) {
+    @Override public boolean remove(L vertex) {
         boolean result = false;
         int i = 0;
         int p = -1;
-        for (Vertex v : vertices) {
-            Map<String, Integer> targets = v.getTargets();
+        for (Vertex<L> v : vertices) {
+            Map<L, Integer> targets = v.getTargets();
             if (vertex.equals(v.getContent())) {
                 p = i;
             }
@@ -87,18 +87,18 @@ public class ConcreteVerticesGraph implements Graph<String> {
         return result;
     }
     
-    @Override public Set<String> vertices() {
-        Set<String> result = new HashSet<>();
-        for (Vertex v : vertices) {
+    @Override public Set<L> vertices() {
+        Set<L> result = new HashSet<>();
+        for (Vertex<L> v : vertices) {
             result.add(v.getContent());
         }
         return result;
     }
     
-    @Override public Map<String, Integer> sources(String target) {
-        Map<String, Integer> result = new HashMap<>();
-        for (Vertex vertex : vertices) {
-            Map<String, Integer> targets = vertex.getTargets();
+    @Override public Map<L, Integer> sources(L target) {
+        Map<L, Integer> result = new HashMap<>();
+        for (Vertex<L> vertex : vertices) {
+            Map<L, Integer> targets = vertex.getTargets();
             if (targets.containsKey(target)) {
                 result.put(vertex.getContent(), targets.get(target));
             }
@@ -106,8 +106,8 @@ public class ConcreteVerticesGraph implements Graph<String> {
         return result;
     }
     
-    @Override public Map<String, Integer> targets(String source) {
-        for (Vertex v : vertices) {
+    @Override public Map<L, Integer> targets(L source) {
+        for (Vertex<L> v : vertices) {
             if (source.equals(v.getContent())) {
                 return v.getTargets();
             }
@@ -123,7 +123,7 @@ public class ConcreteVerticesGraph implements Graph<String> {
         StringBuilder edgeSB = new StringBuilder();
         String vertex = "There are " + this.vertices.size() + " vertices in this graph:\n";
         sb.append(vertex);
-        for (Vertex v : vertices) {
+        for (Vertex<L> v : vertices) {
             i += v.getTargets().size();
             sb.append(v.getContent());
             sb.append(" ");
@@ -146,10 +146,10 @@ public class ConcreteVerticesGraph implements Graph<String> {
  * <p>PS2 instructions: the specification and implementation of this class is
  * up to you.
  */
-class Vertex {
+class Vertex<L> {
     // fields
-    private final String content;
-    private final Map<String, Integer> targets = new HashMap<>();;
+    private final L content;
+    private final Map<L, Integer> targets = new HashMap<>();;
     
     // Abstraction function:
     //   TODO
@@ -172,13 +172,13 @@ class Vertex {
         if (obj == null || this.getClass() != obj.getClass()) {
             return false;
         }
-        Vertex that = (Vertex) obj;
+        Vertex<L> that = (Vertex<L>) obj;
         return this.content.equals(that.content)
                 && this.targets.equals(that.targets);
     }
 
     // constructor
-    public Vertex(String content) {
+    public Vertex(L content) {
         this.content = content;
     }
 
@@ -186,11 +186,11 @@ class Vertex {
     // TODO checkRep
     
     // methods
-    public String getContent() {
+    public L getContent() {
         return content;
     }
 
-    public Map<String, Integer> getTargets() {
+    public Map<L, Integer> getTargets() {
         return Collections.unmodifiableMap(targets);
     }
 
@@ -203,7 +203,7 @@ class Vertex {
         return sb.toString();
     }
 
-    public int setEdge(String t, int w) {
+    public int setEdge(L t, int w) {
         int result = 0;
         if (this.targets.containsKey(t)) {
             result = this.targets.get(t);

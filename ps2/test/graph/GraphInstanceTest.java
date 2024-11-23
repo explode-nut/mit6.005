@@ -27,7 +27,7 @@ public abstract class GraphInstanceTest {
     
     /**
      * Overridden by implementation-specific test classes.
-     * 
+     *
      * @return a new empty graph of the particular implementation being tested
      */
     public abstract Graph<String> emptyInstance();
