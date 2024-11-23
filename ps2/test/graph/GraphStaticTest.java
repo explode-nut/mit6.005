@@ -33,6 +33,26 @@ public class GraphStaticTest {
                 Collections.emptySet(), Graph.empty().vertices());
     }
     
-    // TODO test other vertex label types in Problem 3.2
-    
+    // test other vertex label types in Problem 3.2
+    @Test
+    public void testIntegerType() {
+        Graph<Integer> g = Graph.empty();
+        g.add(1);
+        g.add(3);
+        g.add(55);
+        g.add(79);
+        assertEquals("expected graph to have 4 vertices",
+                4, g.vertices().size());
+    }
+
+    @Test
+    public void testStringType() {
+        Graph<String> g = Graph.empty();
+        g.add("a");
+        g.add("b");
+        g.add("c");
+        g.add("d");
+        assertEquals("expected graph to have 4 vertices",
+                4, g.vertices().size());
+    }
 }
